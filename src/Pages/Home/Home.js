@@ -1,8 +1,11 @@
 import React from 'react';
-import Appointment from './Appointment';
+import MakeAppointment from './MakeAppointment';
 import Banner from './Banner';
 import Info from './Info';
 import Services from './Services';
+import Testimonials from './Testimonials';
+import ContactUs from './ContactUs';
+import Footer from '../Shared/Footer';
 
 const Home = () => {
     return (
@@ -10,7 +13,10 @@ const Home = () => {
             <Banner></Banner>
             <Info></Info>
             <Services></Services>
-            <Appointment></Appointment>
+            <MakeAppointment></MakeAppointment>
+            <Testimonials></Testimonials>
+            <ContactUs></ContactUs>
+            <Footer></Footer>
         </div>
     );
 };
