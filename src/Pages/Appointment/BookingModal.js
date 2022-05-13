@@ -25,7 +25,7 @@ const BookingModal = ({ treatment, date, setTreatment }) => {
         <div className="modal-box">
           <label
             for="booking-modal"
-            class="btn btn-sm btn-circle absolute right-2 top-2"
+            className="btn btn-sm btn-circle absolute right-2 top-2"
           >
             ✕
           </label>
@@ -37,9 +37,9 @@ const BookingModal = ({ treatment, date, setTreatment }) => {
               type="text"
               disabled
               value={format(date, "PP")}
-              class="input input-bordered w-full"
+              className="input input-bordered w-full"
             />
-            <select name="slot" class="select select-bordered w-full">
+            <select name="slot" className="select select-bordered w-full">
               {
                 slots.map(slot => <option value={slot}>{slot}</option>)
               }
@@ -48,24 +48,24 @@ const BookingModal = ({ treatment, date, setTreatment }) => {
               type="text"
               name="name"
               placeholder="Your Name"
-              class="input input-bordered w-full"
+              className="input input-bordered w-full"
             />
             <input
               type="email"
               name="email"
               placeholder="Email Address"
-              class="input input-bordered w-full"
+              className="input input-bordered w-full"
             />
             <input
               type="tel"
               name="phone"
               placeholder="Phone Number"
-              class="input input-bordered w-full"
+              className="input input-bordered w-full"
             />
             <input
               type="submit"
               value="Book Appointment"
-              class="btn btn-secondary w-full"
+              className="btn btn-secondary w-full"
             />
           </form>
         </div>

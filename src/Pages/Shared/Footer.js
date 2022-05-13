@@ -6,12 +6,12 @@ const Footer = () => {
     const year = new Date().getFullYear();
   return (
     <footer
-      style={{
-        background: `url(${footerBg})`,
-        backgroundSize: "cover",
-        backgroundPosition: 'center'
-      }}
-      className="p-10"
+    style={{
+      background: `url(${footerBg})`,
+      backgroundSize: "cover",
+      backgroundPosition: 'center'
+    }}
+      className="p-10 footer"
     >
       <div className="footer">
         <div>
