@@ -1,36 +1,37 @@
 import React, { useEffect } from "react";
 import auth from "../../firebase.init";
 import {
-  useSignInWithEmailAndPassword,
+  useCreateUserWithEmailAndPassword,
   useSignInWithGoogle,
+  useUpdateProfile,
 } from "react-firebase-hooks/auth";
 import { useForm } from "react-hook-form";
 import Loading from "../Shared/Loading";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const [signInWithEmailAndPassword, user, loading, error] =
-    useSignInWithEmailAndPassword(auth);
+const SignUp = () => {
   const [signInWithGoogle, userGoogle, loadingGoogle, errorGoogle] =
     useSignInWithGoogle(auth);
-    const navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
+  const [createUserWithEmailAndPassword, user, loading, error] =
+    useCreateUserWithEmailAndPassword(auth);
+  const [updateProfile, updating, errorUpdating] = useUpdateProfile(auth);
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   useEffect(() => {
     if (user || userGoogle) {
       navigate(from, { replace: true });
     }
   }, [from, navigate, user, userGoogle]);
-  if (loading || loadingGoogle) {
+  if (loading || updating || loadingGoogle) {
     return <Loading></Loading>;
   }
   let errorMessage;
-  
   if (error || errorGoogle) {
     errorMessage = (
       <p className="pb-2 text-red-500">
@@ -38,15 +39,40 @@ const Login = () => {
       </p>
     );
   }
-  const handleLogin = (data) => {
-    signInWithEmailAndPassword(data.email, data.password);
+  const handleSignup = async (data) => {
+    await createUserWithEmailAndPassword(data.email, data.password);
+    await updateProfile({ displayName: data.name });
   };
+
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="card w-96 bg-base-100 shadow-xl">
         <div className="card-body">
-          <h2 className="text-center text-2xl font-bold">Login</h2>
-          <form onSubmit={handleSubmit(handleLogin)}>
+          <h2 className="text-center text-2xl font-bold">Sign Up</h2>
+          <form onSubmit={handleSubmit(handleSignup)}>
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text">Your Name</span>
+              </label>
+              <input
+                {...register("name", {
+                  required: {
+                    value: true,
+                    message: "Name is Required",
+                  },
+                })}
+                type="text"
+                placeholder="Name"
+                className="input input-bordered w-full max-w-xs"
+              />
+              <label className="label">
+                {errors.name?.type === "required" && (
+                  <span className="label-text-alt text-red-500">
+                    {errors.email.message}
+                  </span>
+                )}
+              </label>
+            </div>
             <div className="form-control w-full max-w-xs">
               <label className="label">
                 <span className="label-text">Your Email</span>
@@ -112,13 +138,13 @@ const Login = () => {
               </label>
             </div>
             {errorMessage}
-            <input type="submit" value="Login" className="btn w-full" />
+            <input type="submit" value="Signup" className="btn w-full" />
           </form>
           <p>
             <small>
-              New to doctors portal.{" "}
-              <Link to="/signup" className="text-primary">
-                Create New Account
+              Already Have An Account?{" "}
+              <Link to="/login" className="text-primary">
+                Login
               </Link>
             </small>
           </p>
@@ -135,4 +161,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

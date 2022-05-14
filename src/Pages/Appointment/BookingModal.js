@@ -1,30 +1,69 @@
 import { format } from "date-fns";
 import React from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { toast } from "react-toastify";
+import auth from "../../firebase.init";
 
-const BookingModal = ({ treatment, date, setTreatment }) => {
-  const { name, slots } = treatment;
-  const handleBooking = event => {
+const BookingModal = ({ treatment, date, setTreatment, refetch }) => {
+  const { _id, name, slots } = treatment;
+  const [user, loading, error] = useAuthState(auth);
+  const handleBooking = (event) => {
     event.preventDefault();
     const slot = event.target.slot.value;
-    const name = event.target.name.value;
-    const email = event.target.email.value;
-    const phone = event.target.phone.value;
-    console.log({
-        slot,
-        name,
-        email, 
-        date, 
-        phone,
-    });
-    setTreatment(null)
-  }
+    const formattedDate = format(date, "PP");
+    const booking = {
+      treatmentId: _id,
+      treatment: name,
+      date: formattedDate,
+      slot,
+      patient: user.email,
+      patientName: user.displayName,
+      phone: event.target.phone.value,
+    };
+    fetch("http://localhost:5000/booking", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(booking),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          toast.success(`Appointment on, ${formattedDate} at ${slot}`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark'
+          });
+        }
+        else {
+          toast.error(`Already Have An Appointment on, ${data.booking.date} at ${data.booking.slot}`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark'
+          });
+        }
+      });
+    refetch();
+    setTreatment(null);
+  };
   return (
     <div>
       <input type="checkbox" id="booking-modal" className="modal-toggle" />
       <div className="modal modal-bottom sm:modal-middle backdrop-blur">
         <div className="modal-box">
           <label
-            for="booking-modal"
+            htmlFor="booking-modal"
             className="btn btn-sm btn-circle absolute right-2 top-2"
           >
             ✕
@@ -32,7 +71,10 @@ const BookingModal = ({ treatment, date, setTreatment }) => {
           <h3 className="font-bold text-lg text-secondary">
             Booking for: {name}
           </h3>
-          <form onSubmit={handleBooking} className="grid grid-cols-1 gap-3 justify-items-center mt-2">
+          <form
+            onSubmit={handleBooking}
+            className="grid grid-cols-1 gap-3 justify-items-center mt-2"
+          >
             <input
               type="text"
               disabled
@@ -40,20 +82,24 @@ const BookingModal = ({ treatment, date, setTreatment }) => {
               className="input input-bordered w-full"
             />
             <select name="slot" className="select select-bordered w-full">
-              {
-                slots.map(slot => <option value={slot}>{slot}</option>)
-              }
+              {slots.map((slot, index) => (
+                <option key={index} value={slot}>
+                  {slot}
+                </option>
+              ))}
             </select>
             <input
               type="text"
               name="name"
-              placeholder="Your Name"
+              disabled
+              value={user?.displayName || ""}
               className="input input-bordered w-full"
             />
             <input
               type="email"
               name="email"
-              placeholder="Email Address"
+              disabled
+              value={user?.email || ""}
               className="input input-bordered w-full"
             />
             <input

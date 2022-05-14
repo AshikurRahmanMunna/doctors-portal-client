@@ -1,7 +1,11 @@
+import { signOut } from "firebase/auth";
 import React from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Link } from "react-router-dom";
+import auth from "../../firebase.init";
 
 const Navbar = () => {
+  const [user, loading, error] = useAuthState(auth);
   const menuItems = (
     <>
       <li>
@@ -17,11 +21,22 @@ const Navbar = () => {
         <Link to="/reviews">Reviews</Link>
       </li>
       <li>
-        <Link to="/contact">Contact Us</Link>
+        <Link to="/contact">Contact</Link>
       </li>
-      <li>
-        <Link to="/login">Login</Link>
-      </li>
+      {user && (
+        <li>
+          <Link to="/dashboard">Dashboard</Link>
+        </li>
+      )}
+      {user ? (
+        <button onClick={() => signOut(auth)} className="btn btn-ghost">
+          Sign Out
+        </button>
+      ) : (
+        <li>
+          <Link to="/login">Login</Link>
+        </li>
+      )}
     </>
   );
   return (
@@ -51,10 +66,33 @@ const Navbar = () => {
             {menuItems}
           </ul>
         </div>
-        <a className="btn btn-ghost normal-case text-xl">Doctors Portal</a>
+        <Link to="/" className="btn btn-ghost normal-case text-xl">
+          Doctors Portal
+        </Link>
       </div>
-      <div className="navbar-end hidden lg:flex">
+      <div className="navbar-center lg:navbar-end hidden lg:flex">
         <ul className="menu menu-horizontal p-0">{menuItems}</ul>
+      </div>
+      <div className="navbar-end lg:flex lg:hidden">
+        <label
+          for="my-drawer-2"
+          class="btn btn-primary drawer-button"
+        >
+          <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h8m-8 6h16"
+              />
+            </svg>
+        </label>
       </div>
     </div>
   );
