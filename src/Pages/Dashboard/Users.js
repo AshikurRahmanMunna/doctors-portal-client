@@ -9,7 +9,7 @@ import UserRow from './UserRow';
 
 const Users = () => {
     const navigate = useNavigate();
-    const {data: users, isLoading, error, refetch}  = useQuery('users', () => fetch('http://localhost:5000/user', {
+    const {data: users, isLoading, error, refetch}  = useQuery('users', () => fetch('https://thawing-dusk-20160.herokuapp.com/user', {
         method: 'GET',
         headers: {
             'content-type': 'application.json',

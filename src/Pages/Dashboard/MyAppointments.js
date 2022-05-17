@@ -11,7 +11,7 @@ const MyAppointments = () => {
   useEffect(() => {
     if (user) {
       console.log(user?.email);
-      fetch(`http://localhost:5000/booking?patient=${user?.email}`, {
+      fetch(`https://thawing-dusk-20160.herokuapp.com/booking?patient=${user?.email}`, {
         method: "GET",
         headers: {
           "content-type": "application/json",
