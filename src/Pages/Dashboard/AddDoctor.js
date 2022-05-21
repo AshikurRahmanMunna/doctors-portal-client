@@ -13,7 +13,7 @@ const AddDoctor = () => {
     reset
   } = useForm();
   const { data: services, isLoading } = useQuery("services", () =>
-    fetch("http://localhost:5000/service").then((res) => res.json())
+    fetch("https://thawing-dusk-20160.herokuapp.com/service").then((res) => res.json())
   );
   const location = useLocation();
 
@@ -43,7 +43,7 @@ const AddDoctor = () => {
             img: img,
           };
           // send to your database
-          fetch("http://localhost:5000/doctor", {
+          fetch("https://thawing-dusk-20160.herokuapp.com/doctor", {
             method: "POST",
             headers: {
               "content-type": "application/json",
